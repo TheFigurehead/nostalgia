@@ -1,6 +1,7 @@
 import {AppWindow} from "./window/Base";
 import {Console} from "./console/Console";
 import {DrawBoard} from "./gui/DrawBoard";
+import {Workbench} from "./workbench/Workbench";
 
 export class States {
     public static instance: States;
@@ -8,6 +9,7 @@ export class States {
     public windows: {  [key: string]: AppWindow } = {};
     public console: Console;
     public drawBoard: DrawBoard;
+    public workbench: Workbench;
 
     public canvas: HTMLCanvasElement;
     public context: CanvasRenderingContext2D;
@@ -44,5 +46,8 @@ export class States {
     }
     public setDrawBoard(drawBoard: DrawBoard) {
         this.drawBoard = drawBoard;
+    }
+    setWorkbench(workbench: Workbench) {
+        this.workbench = workbench;
     }
 }
