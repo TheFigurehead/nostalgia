@@ -18,18 +18,18 @@ export class AppWindow {
     }
 
     private clickDetect() {
-        console.log(this);
-        this.states.canvas.addEventListener('click', (e) => {
-            if(
-                e.clientX > this.dimensions.x
-                && e.clientX < this.dimensions.x + this.dimensions.width
-                && e.clientY > this.dimensions.y
-                && e.clientY < this.dimensions.y + this.dimensions.height
-            ){
-                // alert('Window clicked!')
-                console.log('Window clicked!');
-            }
-        });
+        // console.log(this);
+        // this.states.canvas.addEventListener('click', (e) => {
+        //     if(
+        //         e.clientX > this.dimensions.x
+        //         && e.clientX < this.dimensions.x + this.dimensions.width
+        //         && e.clientY > this.dimensions.y
+        //         && e.clientY < this.dimensions.y + this.dimensions.height
+        //     ){
+        //         // alert('Window clicked!')
+        //         // console.log('Window clicked!');
+        //     }
+        // });
     }
 
     closeDetect() {

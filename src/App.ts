@@ -2,6 +2,7 @@ import { AppWindow } from './window/Base';
 import { Console } from './console/Console';
 import { DrawBoard } from './gui/DrawBoard';
 import {States} from "./States";
+import {Workbench} from "./workbench/Workbench";
 
 export class App {
 
@@ -16,6 +17,8 @@ export class App {
             this.states.setDrawBoard(new DrawBoard());
 
             this.states.setConsole(new Console());
+
+            this.states.setWorkbench(new Workbench());
             // this.states.addWindow(new AppWindow());
 
             // const window1 = new AppWindow();

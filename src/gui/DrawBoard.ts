@@ -1,4 +1,3 @@
-import {AppWindow} from "../window/Base";
 import {States} from "../States";
 
 export class DrawBoard{
@@ -14,25 +13,8 @@ export class DrawBoard{
 
         this.states.console.setDimensions();
 
-        this.states.context.fillStyle = '#fff';
-        this.states.context.fillRect(0, 0, this.states.canvas.width, this.states.canvas.height);
-
-        this.states.context.fillStyle = '#55ffff';
-        this.states.context.fillRect(10, 10, 100, 100);
-
-        this.states.context.fillStyle = '#ffff55';
-        this.states.context.fillRect(10, 120, 100, 100);
-
-        this.states.context.fillStyle = '#ffffff';
-        this.states.context.fillRect(10, 230, 100, 100);
-
-        this.states.context.fillStyle = '#00aaaa';
-        this.states.context.fillRect(120, 10, 100, 100);
-
-        this.states.context.fillStyle = '#fff';
-        this.states.context.fillRect(230, 10, 100, 100);
-
         this.states.console.drawConsole();
+        this.states.workbench.drawWorkbench();
 
         Object.keys(this.states.windows).forEach((key: string) => {
             this.states.windows[key].drawWindow();

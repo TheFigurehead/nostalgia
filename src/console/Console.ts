@@ -53,6 +53,13 @@ export class Console {
         this.states.context.fillStyle = '#000';
         this.states.context.fillRect(0, this.dimensions.y, this.dimensions.width, this.dimensions.height);
 
+        this.states.context.fillStyle = '#e6e6e6';
+        this.states.context.strokeStyle = '#e6e6e6';
+        this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, this.dimensions.height);
+
+        this.states.context.fillStyle = '#666';
+        this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, 20);
+
         this.drawConsoleCommands();
         this.cursorBlinkDraw();
     }
@@ -74,12 +81,7 @@ export class Console {
                 && e.clientY > this.dimensions.y
                 && e.clientY < this.dimensions.y + this.dimensions.height
             ){
-                // console.log(this.dimensions);
-                // console.log(e.screenX, e.screenY);
-                // console.log(e);
-                // alert('Clicked console!');
                 this.setActive(true);
-                // this.commands.push('Clicked console!');
                 this.drawConsole();
             }
         });
@@ -161,14 +163,10 @@ export class Console {
                 this.commands[this.commands.length-1] = this.commands[this.commands.length-1] + e.key;
 
         }
-        // if(e.key === 'Enter'){
-        // }else{
-        //     this.commands[this.commands.length-1] = this.commands[this.commands.length-1] + e.key;
-        // }
         this.drawConsole();
     }
 
-    private processCommand(command: string) {
+    public processCommand(command: string) {
         const commandArray = command.split(' ');
         const commandName = commandArray[0];
         const commandArgs = commandArray.slice(1);
