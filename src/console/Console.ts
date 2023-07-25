@@ -62,6 +62,8 @@ export class Console {
 
         this.drawConsoleCommands();
         this.cursorBlinkDraw();
+
+        // console.log('context attributes', this.states.context.getContextAttributes());
     }
 
     private drawConsoleCommands() {
