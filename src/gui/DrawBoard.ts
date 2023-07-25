@@ -8,6 +8,7 @@ export class DrawBoard{
     }
 
     drawContent(){
+
         this.states.canvas.width = window.innerWidth;
         this.states.canvas.height = window.innerHeight;
 
@@ -19,6 +20,30 @@ export class DrawBoard{
         Object.keys(this.states.windows).forEach((key: string) => {
             this.states.windows[key].drawWindow();
         });
+
+
+        // const path = new Path2D();
+
+        // path.moveTo(0, this.states.canvas.height*0.7);
+        // path.lineTo(this.states.canvas.width, this.states.canvas.height*0.7);
+        //
+        // this.states.context.strokeStyle = 'red';
+        // this.states.context.stroke(path);
+        //
+        // this.states.context.restore();
+        //
+        // let iter = this.states.canvas.height*0.7;
+
+        // setInterval(() => {
+        //     // this.states.context.clearRect(0, 0, this.states.canvas.width, this.states.canvas.height);
+        //     this.states.context.restore();
+        //     path.moveTo(0, iter);
+        //     path.lineTo(this.states.canvas.width, iter);
+        //     this.states.context.strokeStyle = 'red';
+        //     this.states.context.stroke(path);
+        //     this.states.context.save();
+        //     iter -= 10;
+        // }, 100);
     }
 
     resizeCanvas(){
