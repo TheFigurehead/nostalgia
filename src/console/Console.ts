@@ -5,7 +5,10 @@ import {AppWindow} from "../window/Base";
 export class Console {
 
     private commands: string[] = [];
-    private dimensions: {x:number, y: number, width: number, height: number};
+
+    private lines: number = 20;
+
+    private currentLine = 0;
 
     private cursorPosition: number = 0;
 
@@ -14,6 +17,12 @@ export class Console {
     public states: States = States.getInstance();
 
     private cursorBlinkBool: boolean = true;
+
+    private dimensions: {x:number, y: number, width: number, height: number};
+
+    private lineHeight: number;
+
+    private keyHandlerOn: boolean = false;
 
     constructor() {
     }
@@ -26,14 +35,18 @@ export class Console {
         this.setCursorPosition(this.commands.length-1);
 
         this.cursorBlink();
+
+        this.setActive(true);
+
+        this.lineHeight = this.dimensions.height/(this.lines) * 0.95;
     }
 
-    public setDimensions() {
+    public setDimensions(x: number, y: number, width: number, height: number) {
         this.dimensions = {
-            x: 0,
-            y: this.states.canvas.height*0.7,
-            width: this.states.canvas.width,
-            height: this.states.canvas.height*0.3
+            x: x,
+            y: y,
+            width: width,
+            height: height
         }
     }
 
@@ -46,10 +59,22 @@ export class Console {
     }
 
     public incrementCursorPosition() {
+        this.currentLine++;
+        if(this.currentLine >= this.lines-1){
+            this.cursorPosition = this.lines -1;
+            return;
+        }
         this.cursorPosition++;
     }
 
     public drawConsole() {
+
+        // console.log('Console console: ', this.active);
+        //
+        // if(!this.active) return;
+
+        // console.log('drawConsole', this.dimensions, this.active);
+
         this.states.context.fillStyle = '#000';
         this.states.context.fillRect(0, this.dimensions.y, this.dimensions.width, this.dimensions.height);
 
@@ -67,15 +92,16 @@ export class Console {
     }
 
     private drawConsoleCommands() {
-        for(let i = 0; i < this.commands.length; i++){
-            this.states.context.font = "30px VT323";
+        // const start = Math.max(this.commands.length - this.lines, 0);
+        const visibleCommands = this.commands.slice(-this.lines);
+        for(let i = 0; i < visibleCommands.length; i++){
+            this.states.context.font = `${this.lineHeight}px VT323`;
             this.states.context.fillStyle = '#fff';
-            this.states.context.fillText(this.commands[i], 30, this.dimensions.y + 30 + 30*i);
+            this.states.context.fillText(visibleCommands[i], 30, this.dimensions.y + this.lineHeight + this.lineHeight*i);
         }
     }
 
     private clickDetect() {
-        console.log(this.states);
         this.states.canvas.addEventListener('click', (e) => {
             if(
                 e.clientX > this.dimensions.x
@@ -84,14 +110,19 @@ export class Console {
                 && e.clientY < this.dimensions.y + this.dimensions.height
             ){
                 this.setActive(true);
-                this.drawConsole();
+                this.states.drawBoard.drawContent();
+            }else{
+                this.setActive(false);
             }
         });
     }
 
     private keyDetect() {
+        if(this.keyHandlerOn) return;
+        this.keyHandlerOn = true;
         document.addEventListener('keydown', (e) => {
             if(this.active){
+                console.log('click', e.key);
                 this.keyPress(e);
             }
         });
@@ -100,18 +131,19 @@ export class Console {
     private cursorBlink() {
         setInterval(() => {
             this.cursorBlinkBool = !this.cursorBlinkBool;
-            this.drawConsole();
+            this.states.drawBoard.drawContent();
         }, 1000);
     }
 
     private cursorBlinkDraw() {
-        if(!this.active) return;
-        this.states.context.font = "30px VT323";
+        // if(!this.active) return;
+        // console.log('why?', this.cursorBlinkBool);
+        this.states.context.font = `${this.lineHeight}px VT323`;
         this.states.context.fillStyle = (this.cursorBlinkBool) ? '#fff' : '#000';
         this.states.context.fillText(
             '_',
             this.states.context.measureText(this.commands[this.commands.length-1]).width + 35,
-            this.dimensions.y + 35 + 30*this.cursorPosition
+            this.dimensions.y + 35 + this.lineHeight*this.cursorPosition
         );
     }
 
@@ -165,7 +197,7 @@ export class Console {
                 this.commands[this.commands.length-1] = this.commands[this.commands.length-1] + e.key;
 
         }
-        this.drawConsole();
+        this.states.drawBoard.drawContent();
     }
 
     public processCommand(command: string) {
@@ -182,6 +214,7 @@ export class Console {
             case 'clear':
                 this.commands = [''];
                 this.cursorPosition = 0;
+                this.currentLine = 0;
                 break;
             case 'echo':
                 this.commands.push(commandArgs.join(' '));
@@ -205,7 +238,6 @@ export class Console {
                     this.incrementCursorPosition();
                 }
                 this.commands.push('');
-                console.log(this.states.windows);
                 // this.incrementCursorPosition();
                 break;
             case 'close':
@@ -216,7 +248,6 @@ export class Console {
 
                 this.states.drawBoard.drawContent();
 
-                console.log(this.states.windows);
                 this.incrementCursorPosition();
                 break;
             default:
@@ -225,5 +256,6 @@ export class Console {
                 this.incrementCursorPosition();
         }
         console.log(this.commands)
+        console.log(this.currentLine)
     }
 }

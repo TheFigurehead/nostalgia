@@ -47,13 +47,16 @@ export class AppWindow {
     }
 
     public dragDetect() {
+        console.log('drag detect');
         this.states.canvas.addEventListener('mousedown', (event) => {
+            console.log('mousedown');
             this.mouseEvent.down = true;
             this.mouseEvent.up = false;
             this.mouseEvent.x = event.clientX;
             this.mouseEvent.y = event.clientY;
         });
         this.states.canvas.addEventListener('mouseup', (event) => {
+            console.log('mouseup');
             this.mouseEvent.down = false;
             this.mouseEvent.up = true;
             this.mouseEvent.x = 0;
@@ -61,6 +64,7 @@ export class AppWindow {
         });
         this.states.canvas.addEventListener('mousemove', (event) => {
            if(this.mouseEvent.down){
+               // console.log('mousemove');
                this.dimensions.x += event.clientX - this.mouseEvent.x;
                this.dimensions.y += event.clientY - this.mouseEvent.y;
                this.mouseEvent.x = event.clientX;

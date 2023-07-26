@@ -6,7 +6,7 @@ export class Workbench {
     }
     drawWorkbench() {
         this.states.context.fillStyle = '#fff';
-        this.states.context.fillRect(0, 0, this.states.canvas.width, this.states.canvas.height*0.7);
+        this.states.context.fillRect(0, 0, this.states.canvas.width, this.states.canvas.height*0.4);
         this.drawWorkbenchContent();
     }
     drawWorkbenchContent() {
