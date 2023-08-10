@@ -327,6 +327,7 @@ export class Console {
             }
         });
 
+
         document.addEventListener('mousedown', (e) => {
             if(
                 e.clientX > this.scroll.x
