@@ -4,17 +4,48 @@ import {AppWindow} from "../window/Base";
 
 export class Console {
 
-    private commands: string[] = [];
+    private commands: string[] = [
+        'Hello World 1',
+        'Hello World 2',
+        'Hello World 3',
+        'Hello World 4',
+        'Hello World 5',
+        'Hello World 6',
+        'Hello World 7',
+        'Hello World 8',
+        'Hello World 9',
+        'Hello World 10',
+        'Hello World 11',
+        'Hello World 12',
+        'Hello World 13',
+        'Hello World 14',
+        'Hello World 15',
+        'Hello World 16',
+        'Hello World 17',
+        'Hello World 18',
+        'Hello World 19',
+        'Hello World 20',
+        'Hello World 21',
+        'Hello World 22',
+        'Hello World 23',
+        'Hello World 24',
+        'Hello World 25',
+        'Hello World 26',
+        ''
+    ];
 
     private lines: number = 20;
 
-    private currentLine = 0;
+    private currentLine = this.commands.length-1;
 
-    private cursorPosition: number = 0;
+    private cursorPosition: number = this.lines-1;
+    // private cursorPosition: number = 0;
 
     public active: boolean = false;
 
     public states: States = States.getInstance();
+
+    private cursorBlinkTimeoutId: NodeJS.Timeout;
 
     private cursorBlinkBool: boolean = true;
 
@@ -24,17 +55,27 @@ export class Console {
 
     private keyHandlerOn: boolean = false;
 
+    private scroll: any = {
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0
+    }
+
+    private viewCommandStart: number = 0;
+
     constructor() {
     }
 
     public init() {
-        this.commands = [''];
+        // this.commands = [''];
 
         this.clickDetect();
         this.keyDetect();
-        this.setCursorPosition(this.commands.length-1);
+        this.scrollInteract();
+        // this.setCursorPosition(this.commands.length-1);
 
-        this.cursorBlink();
+        if(!this.cursorBlinkTimeoutId) this.cursorBlink();
 
         this.setActive(true);
 
@@ -61,6 +102,7 @@ export class Console {
     public incrementCursorPosition() {
         this.currentLine++;
         if(this.currentLine >= this.lines-1){
+            this.viewCommandStart++;
             this.cursorPosition = this.lines -1;
             return;
         }
@@ -69,31 +111,20 @@ export class Console {
 
     public drawConsole() {
 
-        // console.log('Console console: ', this.active);
-        //
-        // if(!this.active) return;
-
-        // console.log('drawConsole', this.dimensions, this.active);
-
         this.states.context.fillStyle = '#000';
         this.states.context.fillRect(0, this.dimensions.y, this.dimensions.width, this.dimensions.height);
 
-        this.states.context.fillStyle = '#e6e6e6';
-        this.states.context.strokeStyle = '#e6e6e6';
-        this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, this.dimensions.height);
-
-        this.states.context.fillStyle = '#666';
-        this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, 20);
+        this.drawScroll();
 
         this.drawConsoleCommands();
         this.cursorBlinkDraw();
 
-        // console.log('context attributes', this.states.context.getContextAttributes());
     }
 
     private drawConsoleCommands() {
         // const start = Math.max(this.commands.length - this.lines, 0);
-        const visibleCommands = this.commands.slice(-this.lines);
+        // const visibleCommands = this.commands.slice(-this.lines);
+        const visibleCommands = this.commands.slice(this.viewCommandStart, this.viewCommandStart + this.lines);
         for(let i = 0; i < visibleCommands.length; i++){
             this.states.context.font = `${this.lineHeight}px VT323`;
             this.states.context.fillStyle = '#fff';
@@ -122,22 +153,21 @@ export class Console {
         this.keyHandlerOn = true;
         document.addEventListener('keydown', (e) => {
             if(this.active){
-                console.log('click', e.key);
+                this.viewCommandStart = Math.max(this.commands.length - this.lines, 0);
                 this.keyPress(e);
             }
         });
     }
 
     private cursorBlink() {
-        setInterval(() => {
+        this.cursorBlinkTimeoutId = setInterval(() => {
             this.cursorBlinkBool = !this.cursorBlinkBool;
             this.states.drawBoard.drawContent();
-        }, 1000);
+        }, 500);
     }
 
     private cursorBlinkDraw() {
-        // if(!this.active) return;
-        // console.log('why?', this.cursorBlinkBool);
+        if(this.viewCommandStart + this.lines < this.currentLine) return;
         this.states.context.font = `${this.lineHeight}px VT323`;
         this.states.context.fillStyle = (this.cursorBlinkBool) ? '#fff' : '#000';
         this.states.context.fillText(
@@ -255,7 +285,90 @@ export class Console {
                 this.commands.push('');
                 this.incrementCursorPosition();
         }
-        console.log(this.commands)
-        console.log(this.currentLine)
+    }
+
+    public drawScroll(){
+        this.states.context.fillStyle = '#e6e6e6';
+        this.states.context.strokeStyle = '#e6e6e6';
+        this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, this.dimensions.height);
+
+        const scrollHeight = this.dimensions.height * (this.lines / this.commands.length);
+        const scrollY = this.dimensions.y + (this.dimensions.height * (this.viewCommandStart / this.commands.length));
+
+        this.states.context.fillStyle = '#666';
+        this.states.context.fillRect(this.dimensions.width-20, scrollY, 20, scrollHeight);
+
+        this.scroll = {
+            x: this.dimensions.width-20,
+            y: scrollY,
+            height: scrollHeight,
+            width: 20
+        }
+    }
+
+    scrollInteract(){
+
+        let scrollDrag = false;
+        let scrollDragStart = 0;
+
+        document.addEventListener('wheel', (e) => {
+            if(
+                e.clientX > this.dimensions.x
+                && e.clientX < this.dimensions.x + this.dimensions.width
+                && e.clientY > this.dimensions.y
+                && e.clientY < this.dimensions.y + this.dimensions.height
+            ){
+                if(e.deltaY > 0){
+                    this.viewCommandStart = (this.viewCommandStart + 1 > this.commands.length - this.lines) ? this.commands.length - this.lines : this.viewCommandStart + 1;
+                }else{
+                    this.viewCommandStart = (this.viewCommandStart - 1 < 0) ? 0 : this.viewCommandStart - 1;
+                }
+                this.states.drawBoard.drawContent();
+            }
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if(
+                e.clientX > this.scroll.x
+                && e.clientX < this.scroll.x + this.scroll.width
+                && e.clientY > this.scroll.y
+                && e.clientY < this.scroll.y + this.scroll.height
+            ){
+                scrollDrag = true;
+                scrollDragStart = e.clientY;
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            scrollDrag = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if(scrollDrag){
+                const scrollDelta = e.clientY - scrollDragStart;
+                const scrollDeltaPercent = scrollDelta / this.dimensions.height;
+                const scrollDeltaCommands = scrollDeltaPercent * this.commands.length;
+
+                this.viewCommandStart = (this.viewCommandStart + scrollDeltaCommands > this.commands.length - this.lines) ? this.commands.length - this.lines : this.viewCommandStart + scrollDeltaCommands;
+                this.viewCommandStart = (this.viewCommandStart + scrollDeltaCommands < 0) ? 0 : this.viewCommandStart + scrollDeltaCommands;
+
+                scrollDragStart = e.clientY;
+
+                this.states.drawBoard.drawContent();
+            }
+        });
+
+        this.states.canvas.addEventListener('mousemove', (e) => {
+            if(
+                e.clientX > this.scroll.x
+                && e.clientX < this.scroll.x + this.scroll.width
+                && e.clientY > this.scroll.y
+                && e.clientY < this.scroll.y + this.scroll.height
+            ){
+                this.states.canvas.style.cursor = 'pointer';
+            }else{
+                this.states.canvas.style.cursor = 'default';
+            }
+        });
     }
 }

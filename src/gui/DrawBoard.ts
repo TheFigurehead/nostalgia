@@ -19,12 +19,23 @@ export class DrawBoard{
     }
 
     resizeCanvas(){
-        this.drawContent();
+        this.updateSizes();
     }
 
     render() {
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
         return this.states.canvas;
+    }
+
+    updateSizes(){
+        this.states.canvas.width = window.innerWidth;
+        this.states.canvas.height = window.innerHeight;
+        this.states.console.setDimensions(
+            0,
+            this.states.canvas.height*0.4,
+            this.states.canvas.width,
+            this.states.canvas.height*0.6
+        );
     }
 
     init(){
@@ -35,17 +46,9 @@ export class DrawBoard{
         this.states.setCanvas(canvas);
         this.states.setContext(context);
 
-        this.states.canvas.width = window.innerWidth;
-        this.states.canvas.height = window.innerHeight;
+        this.updateSizes();
 
         document.body.appendChild(this.render());
-
-        this.states.console.setDimensions(
-            0,
-            this.states.canvas.height*0.4,
-            this.states.canvas.width,
-            this.states.canvas.height*0.6
-        );
 
         this.states.console.init();
 

@@ -23,7 +23,7 @@ export class Workbench {
                 e.clientY > 10 &&
                 e.clientY < 110
             ){
-                console.log('in window 1');
+                // console.log('in window 1');
                 this.states.canvas.style.cursor = 'pointer';
             }else{
                 this.states.canvas.style.cursor = 'default';
