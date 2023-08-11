@@ -3,6 +3,7 @@ import {States} from "../States";
 export class Workbench {
     public states: States = States.getInstance();
     constructor() {
+        this.states.mouse.addBounds(10, 10, 110, 110, 1, 'pointer');
     }
     drawWorkbench() {
         this.states.context.fillStyle = '#fff';
@@ -16,19 +17,22 @@ export class Workbench {
         this.states.context.font = '20px VT323';
         this.states.context.fillText('Window 1', 30, 60);
 
-        this.states.canvas.addEventListener('mousemove', (e: MouseEvent) => {
-            if(
-                e.clientX > 10 &&
-                e.clientX < 110 &&
-                e.clientY > 10 &&
-                e.clientY < 110
-            ){
-                // console.log('in window 1');
-                this.states.canvas.style.cursor = 'pointer';
-            }else{
-                this.states.canvas.style.cursor = 'default';
-            }
-        });
+        // let timeoutCursor: NodeJS.Timeout = null;
+        // this.states.canvas.addEventListener('mousemove', (e: MouseEvent) => {
+        //     console.log('Mouse: ', this.states.mouse.x, this.states.mouse.y);
+        //     if(
+        //         e.clientX > 10 &&
+        //         e.clientX < 110 &&
+        //         e.clientY > 10 &&
+        //         e.clientY < 110
+        //     ){
+        //         if(timeoutCursor) clearTimeout(timeoutCursor);
+        //         this.states.canvas.style.cursor = 'pointer';
+        //         timeoutCursor = setTimeout(() => {
+        //             this.states.canvas.style.cursor = 'default';
+        //         }, 400);
+        //     }
+        // });
 
         this.states.canvas.addEventListener('click', (e: MouseEvent) => {
             if(

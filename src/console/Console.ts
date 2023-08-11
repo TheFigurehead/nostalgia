@@ -359,6 +359,7 @@ export class Console {
             }
         });
 
+        let timeoutCursor: NodeJS.Timeout = null;
         this.states.canvas.addEventListener('mousemove', (e) => {
             if(
                 e.clientX > this.scroll.x
@@ -366,10 +367,16 @@ export class Console {
                 && e.clientY > this.scroll.y
                 && e.clientY < this.scroll.y + this.scroll.height
             ){
+                if(timeoutCursor) clearTimeout(timeoutCursor);
                 this.states.canvas.style.cursor = 'pointer';
-            }else{
-                this.states.canvas.style.cursor = 'default';
+                timeoutCursor = setTimeout(() => {
+                    this.states.canvas.style.cursor = 'default';
+                }, 400);
             }
         });
+
+        // ADD BOUNDS OBJECT TYPE
+
+        this.states.mouse.addBounds(this.scroll.x, 10, 110, 110, 1, 'pointer');
     }
 }

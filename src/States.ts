@@ -2,6 +2,7 @@ import {AppWindow} from "./window/Base";
 import {Console} from "./console/Console";
 import {DrawBoard} from "./gui/DrawBoard";
 import {Workbench} from "./workbench/Workbench";
+import {Mouse} from "./gui/Mouse";
 
 export class States {
     public static instance: States;
@@ -10,6 +11,7 @@ export class States {
     public console: Console;
     public drawBoard: DrawBoard;
     public workbench: Workbench;
+    public mouse: Mouse = new Mouse();
 
     public canvas: HTMLCanvasElement;
     public context: CanvasRenderingContext2D;
