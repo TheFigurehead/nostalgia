@@ -1,10 +1,21 @@
-type Bounds = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    priority: number,
-    cursor?: string
+class Bounds{
+    public x: number;
+    public y: number;
+    public width: number;
+    public height: number;
+    public priority: number;
+    public cursor?: string;
+
+    constructor(x: number, y: number, width: number, height: number, priority: number, cursor?: string) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.priority = priority;
+        if(cursor){
+            this.cursor = cursor;
+        }
+    }
 }
 
 export class Mouse{
@@ -27,14 +38,7 @@ export class Mouse{
     public cursor: string = 'default';
 
     setDefaultBounds() {
-        this.bounds.push({
-            x: 0,
-            y: 0,
-            width: 10000,
-            height: 10000,
-            priority: 0,
-            cursor: 'default'
-        })
+        this.bounds.push(new Bounds(0, 0, 10000, 10000, 0, 'default'));
     }
 
     setCursor(cursor: string = 'default') {
@@ -70,14 +74,9 @@ export class Mouse{
     }
 
     addBounds(x: number, y: number, width: number, height: number, priority: number, cursor: string = 'default') {
-        this.bounds.push({
-            x: x,
-            y: y,
-            width: width,
-            height: height,
-            priority: priority,
-            cursor: cursor
-        });
+        const bound = new Bounds(x, y, width, height, priority, cursor);
+        this.bounds.push(bound);
+        return bound;
     }
 
 }

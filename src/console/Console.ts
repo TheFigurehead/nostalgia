@@ -1,4 +1,3 @@
-import {App} from "../App";
 import {States} from "../States";
 import {AppWindow} from "../window/Base";
 
@@ -39,7 +38,6 @@ export class Console {
     private currentLine = this.commands.length-1;
 
     private cursorPosition: number = this.lines-1;
-    // private cursorPosition: number = 0;
 
     public active: boolean = false;
 
@@ -59,10 +57,27 @@ export class Console {
         x: 0,
         y: 0,
         height: 0,
-        width: 0
+        width: 0,
+        bound: this.states.mouse.addBounds(0, 0, 0, 0, 1, 'scroll'),
     }
 
     private viewCommandStart: number = 0;
+
+    private consoleButtons: any = {
+        maximize: {
+            x: 0,
+            y: 0,
+            width: 50,
+            height: 50
+        },
+        minimize: {
+            x: 0,
+            y: 0,
+            width: 50,
+            height: 50
+        },
+
+    }
 
     constructor() {
     }
@@ -115,6 +130,8 @@ export class Console {
         this.states.context.fillRect(0, this.dimensions.y, this.dimensions.width, this.dimensions.height);
 
         this.drawScroll();
+
+        this.drawButton();
 
         this.drawConsoleCommands();
         this.cursorBlinkDraw();
@@ -306,7 +323,7 @@ export class Console {
         }
     }
 
-    scrollInteract(){
+    public scrollInteract(){
 
         let scrollDrag = false;
         let scrollDragStart = 0;
@@ -377,6 +394,49 @@ export class Console {
 
         // ADD BOUNDS OBJECT TYPE
 
-        this.states.mouse.addBounds(this.scroll.x, 10, 110, 110, 1, 'pointer');
+        this.scroll.bound.x = this.scroll.x;
+        this.scroll.bound.y = this.scroll.y;
+        this.scroll.bound.width = this.scroll.width;
+        this.scroll.bound.height = this.scroll.height;
+        
+    }
+
+    public drawButton(){
+        if(this.active){
+            this.states.context.fillStyle = '#00aaaa';
+            this.states.context.strokeStyle = '#00aaaa';
+            this.states.context.fillRect(
+                this.dimensions.width-this.consoleButtons.minimize.width - 20,
+                this.states.canvas.height - this.dimensions.height,
+                this.consoleButtons.minimize.width,
+                this.consoleButtons.minimize.height
+            );
+            this.states.context.fillStyle = '#000';
+            this.states.context.font = '60px VT323';
+            this.states.context.fillText(
+                '-',
+                this.dimensions.width-this.consoleButtons.minimize.width + 15 - 20,
+                this.states.canvas.height - this.dimensions.height + 40
+            );
+        }else{
+            this.states.context.fillStyle = '#00aaaa';
+            this.states.context.strokeStyle = '#00aaaa';
+            this.states.context.fillRect(
+                this.dimensions.width-this.consoleButtons.maximize.width,
+                this.states.canvas.height - this.dimensions.height,
+                this.consoleButtons.maximize.width,
+                this.consoleButtons.maximize.height
+            );
+            this.states.context.fillStyle = '#000';
+            this.states.context.font = '20px VT323';
+            this.states.context.fillText(
+                '+',
+                this.dimensions.width-this.consoleButtons.maximize.width + 15,
+                this.states.canvas.height - this.dimensions.height + 35
+            );
+        }
+        // this.states.context.fillStyle = '#e6e6e6';
+        // this.states.context.strokeStyle = '#e6e6e6';
+        // this.states.context.fillRect(this.dimensions.width-20, this.dimensions.y, 20, this.dimensions.height);
     }
 }
